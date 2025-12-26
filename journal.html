@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1>Journal APP</h1>
+<input type="text" id="title" placeholder="Title"><br>
+<textarea id="content" placeholder="Write your journal entry here..."></textarea><br>
+<button id="save">Save Entry</button>
+<p id="sv"></p>
+<ol id="list"></ol>
+
+
+<script>    
+    let journal = JSON.parse(localStorage.getItem("journal")) || [];
+    let svBtn = document.getElementById("save")
+    let li = document.getElementById("list")
+
+
+    function renderApp(){
+    li.innerHTML = ""
+    journal.forEach((c, t) => {;
+    let l = document.createElement("li");
+    l.textContent = `Title: ${c.ttl} - Content: ${c.cnt}`
+    
+    
+    let btn = document.createElement("button")
+    btn.textContent = "Delete"
+    btn.onclick = () => {
+      journal.splice(t, 1);
+      localStorage.setItem("journal", JSON.stringify(journal))
+      renderApp()
+    }
+  
+    let btnEdit  = document.createElement("button");
+    btnEdit.textContent = "Edit"
+    btnEdit.onclick = () => {
+      let newContent = prompt("edit journal", c.text)
+      if(newContent){
+        c.text = newContent
+        localStorage.setItem("journal", JSON.stringify(journal))
+        renderApp();
+      }
+    }
+
+    li.appendChild(l);
+    li.appendChild(btn);
+    li.appendChild(btnEdit);
+    })
+    }
+    
+
+
+
+    svBtn.addEventListener('click', () => {
+    let ttl = document.getElementById("title").value.trim();
+    let cnt = document.getElementById("content").value.trim();
+
+    journal.push({ttl, cnt})
+    localStorage.setItem("journal", JSON.stringify(journal))
+    document.getElementById("sv").textContent = "saved!"
+    document.getElementById("title").value = ""
+    document.getElementById("content").value = ""
+    renderApp();
+});
+renderApp();
+
+</script>
+</body>
+</html>
